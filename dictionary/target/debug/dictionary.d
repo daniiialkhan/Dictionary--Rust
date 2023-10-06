@@ -1,1 +1,1 @@
-C:\RUST\RUST\dictionary\target\debug\dictionary.exe: C:\RUST\RUST\dictionary\src\dictionary.rs C:\RUST\RUST\dictionary\src\main.rs
+D:\Data2\GitHub\ Repositories\Dictionary--Rust\dictionary\target\debug\dictionary.exe: D:\Data2\GitHub\ Repositories\Dictionary--Rust\dictionary\src\dictionary.rs D:\Data2\GitHub\ Repositories\Dictionary--Rust\dictionary\src\main.rs

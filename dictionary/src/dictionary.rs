@@ -1,74 +1,87 @@
-// dictionary.rs is module here
-//usage of clone methods to avoid ownership and borrowing issues.
-//When you return a reference to a string that is stored within the Word struct,
-//you would need to ensure that the lifetime of that reference is valid for the entire duration of its usage.
-pub mod dictionary{
-    #[derive()]
-    pub struct Word {
-        pub word: String,
-        pub definition: String,
-    }
 
-    #[derive()]
-    pub struct Dictionary {
-       pub words: Vec<Word>, // store a collection of words in a vector ; Vec is a growable array;
-    }
+pub mod dictionary {
 
-    impl Dictionary{
-        pub fn new() -> Dictionary { //empty parameters to create a new instance of the Dictionary struct, allows def intialization
-            Dictionary { words: Vec::new() }
-        }
+	pub struct Word {
+		pub word: String,
+		pub meaning: String,
+	}
+	pub struct Dictionary {
+		pub words : Vec<Word>,
+	}
 
-        pub fn add_word_def(&mut self, word:&str, definition:&str) { //Add a word and its definition to the dictionary
-        // &str is a string slice, a reference to a string
-        // since `self` is a `&` reference, so the data it refers to cannot be borrowed as mutable hence mut even though we are not changing the value of self
-            let new_word = Word {
-                word: word.to_string(),
-                definition: definition.to_string(),
-            };
-            self.words.push(new_word);
-        }
+	impl Dictionary {
 
-        pub fn search_word(&mut self, the_word:&str) ->  Option<String>{
-        // Search for a word and return its definition 
-        // Option is an enum that can either be Some or None,why option? cuz we may not find the word,
-        // why not just use if else and user return keyword? we want to return a reference to the definition of the word, not the definition itself
-            for w in &self.words{
-                if w.word == the_word{
-                    println!("Found your word, here's your defintion: {} ", w.definition);
-                    return Some(w.definition.clone()); //some = exists, clone = copy the value of the definition
-                }
-            }
-            return None; // in case nothing to iterate over AND if no match found
-        }
+		// Constructor => Make a new dictionary
+		pub fn new() -> Dictionary {
+			Dictionary {
+				words: Vec::new(),
+			}
+		}
 
-        pub fn list_words(&self){ // List all words and their definitions
-            for w in &self.words{
-                println!("{}: {}", w.word , w.definition);
-            }
-        }
-    }
+		// Add a word to the dictionary
+		pub fn add_word(&mut self, word: &str, meaning: &str) {
+			// Check if word exists already
+			if self.word_exists(word) {
+				println!("Word already exists in dictionary");
+				return;
+			} 
+			// make a new Word object
+			let new_word = Word {
+				word: word.to_string(),
+				meaning: meaning.to_string(),
+			};
+			// add it to the dictionary
+			self.words.push(new_word);
+		}
+
+		pub fn word_exists(&self, word:&str) -> bool {
+			for w in &self.words {
+				if w.word == word {
+					return true;
+				}
+			}
+			false
+		}
+
+		pub fn get_meaning(&self, word: &str) -> Option<&str> {
+			for w in &self.words {
+				if w.word == word {
+					return Some(&w.meaning);
+				}
+			}
+			println!("Word not found in dictionary");
+			None
+		}
+
+		pub fn list_words(&self) {
+			println!("---------------------------------");
+			println!("Listing all words in dictionary");
+			println!("Word  =>  Meaning");
+			println!("---------------------------------");
+			for w in &self.words {
+				println!("{} => {}", w.word, w.meaning)
+			}
+			println!("---------------------------------");
+		}
+
+		// input parts of a word and match it with parts of existing words
+
+		pub fn recommendations(&self, pattern: &str) -> Vec<String> {
+			let mut recommendations: Vec<String> = Vec::new();
+			for w in &self.words {
+				if w.word.contains(pattern) {
+					recommendations.push(w.word.clone());
+				}
+			}
+			recommendations
+		}
+		
+
+
+
+
+
+
+	}
+
 }
-
-/*  if u wnated to use hashmaps here example: but try not making it hard coded.
- use std::collections::HashMap
- fn main() {
-     // Create an empty dictionary (hash map)
-     let mut dictionary = HashMap::new()
-     // Add words and their definitions to the dictionary
-     dictionary.insert("apple", "a fruit");
-     dictionary.insert("car", "a vehicle");
-     dictionary.insert("book", "a written or printed work")
-     // Retrieve and print definitions
-     if let Some(definition) = dictionary.get("apple") {
-         println!("Definition of 'apple': {}", definition);
-     } else {
-         println!("'apple' not found in the dictionary.");
-     
-     if let Some(definition) = dictionary.get("banana") {
-         println!("Definition of 'banana': {}", definition);
-     } else {
-         println!("'banana' not found in the dictionary.");
-     }
- }
-*/
